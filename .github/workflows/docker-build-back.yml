@@ -1,0 +1,40 @@
+name: CI - Docker build (Back)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'back/**'
+      - '.github/workflows/docker-build-back.yml'
+  pull_request:
+    paths:
+      - 'back/**'
+
+jobs:
+  build-back:
+    name: Build & Push Backend Image
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 - Récupérer le code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Étape 2 - Connexion à Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Étape 3 - Construire l’image backend
+      - name: Build backend image
+        run: |
+          docker build -t back-app ./back --build-arg DATABASE_URL="file:./dev.db"
+
+      # Étape 4 - Pousser sur Docker Hub
+      - name: Push backend image
+        run: |
+          docker tag back-app ${{ secrets.DOCKERHUB_USERNAME }}/back-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-app:latest
