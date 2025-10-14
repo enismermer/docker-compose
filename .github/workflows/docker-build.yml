@@ -1,0 +1,44 @@
+name: CI - Docker build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: Build Docker images
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 - Récupérer le code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Étape 2 - Connexion à Docker Hub (optionnelle si tu veux push)
+      - name: Log in to Docker Hub
+        if: secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Étape 3 - Construire le backend
+      - name: Build back image
+        run: |
+          docker build -t back-app ./back
+
+      # Étape 4 - Construire le frontend
+      - name: Build front image
+        run: |
+          docker build -t front-app ./front
+
+      # Étape 5 - (Optionnel) Pousser sur Docker Hub
+      - name: Push images
+        if: secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN
+        run: |
+          docker tag back-app ${{ secrets.DOCKERHUB_USERNAME }}/back-app:latest
+          docker tag front-app ${{ secrets.DOCKERHUB_USERNAME }}/front-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/back-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/front-app:latest
