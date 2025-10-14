@@ -26,7 +26,7 @@ jobs:
       # Étape 3 - Construire le backend
       - name: Build back image
         run: |
-          docker build -t back-app ./back
+            docker build -t back-app ./back --build-arg DATABASE_URL="file:./dev.db"
 
       # Étape 4 - Construire le frontend
       - name: Build front image
