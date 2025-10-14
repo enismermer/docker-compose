@@ -13,6 +13,8 @@ RUN npm install
 # Étape 5 : Copier le reste du code
 COPY . .
 
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 # Étape 6 : Générer le client Prisma (nécessaire après npm install)
 RUN npx prisma db push
 
