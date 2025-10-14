@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  back:
+    build:
+      context: ./back
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./back:/app
+    environment:
+      - NODE_ENV=development
+
+  front:
+    build:
+      context: ./front
+    ports:
+      - "8080:80"
+    volumes:
+      - ./front:/app
+    environment:
+      - NODE_ENV=development

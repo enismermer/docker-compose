@@ -1,7 +1,9 @@
-const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+import express from 'express';
+import { PrismaClient } from '@prisma/client';
+
 const app = express();
 const prisma = new PrismaClient();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -11,12 +13,13 @@ app.get('/users', async (req, res) => {
 });
 
 app.post('/users', async (req, res) => {
-  const { name, email, age } = req.body;
+  const { name, email } = req.body;
   const newUser = await prisma.user.create({
-    data: { name, email, age },
+    data: { name, email },
   });
-  res.json(newUser);
+  res.status(201).json(newUser);
 });
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
