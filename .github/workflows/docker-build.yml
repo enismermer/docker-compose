@@ -18,7 +18,7 @@ jobs:
 
       # Étape 2 - Connexion à Docker Hub (optionnelle si tu veux push)
       - name: Log in to Docker Hub
-        if: secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN
+        if: ${{ secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -36,7 +36,7 @@ jobs:
 
       # Étape 5 - (Optionnel) Pousser sur Docker Hub
       - name: Push images
-        if: secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN
+        if: ${{ secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN }}
         run: |
           docker tag back-app ${{ secrets.DOCKERHUB_USERNAME }}/back-app:latest
           docker tag front-app ${{ secrets.DOCKERHUB_USERNAME }}/front-app:latest
